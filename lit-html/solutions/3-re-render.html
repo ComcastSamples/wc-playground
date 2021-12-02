@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <script type="module">
+    import { html, render } from 'lit';
+
+    // create a function which returns your template
+    function counterTemplate(i) {
+      return html`
+        <p>The current count is: ${i}</p>
+      `;
+    }
+
+    let i = 0;
+
+    // update the counter and render every second
+    setInterval(() => {
+      const template = counterTemplate(i++);
+      render(template, document.body);
+    }, 1000);
+  </script>
+</head>
+<body>
+</body>
+</html>

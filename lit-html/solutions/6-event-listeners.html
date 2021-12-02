@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <script type="module">
+    import { html, render } from 'lit';
+
+    // use @eventname syntax to listen to an event
+    // you can just pass a function to it directly
+    const template = html`
+      <button @click=${() => console.log('clicked!')}>
+        Click me
+      </button>
+    `;
+
+    render(template, document.body);
+  </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <script type="module">
+    /**
+     * End state for:
+     * https://comcastsamples.github.io/wc-playground/codelabs/lit-basics.html#8
+     */
+
+    import { LitElement, html } from 'lit';
+
+    const author = 'open-wc';
+    const homepage = 'https://open-wc.org/';
+    const footerTemplate = html`
+      <footer>Made with love by <a href="${homepage}">${author}</a></footer>
+    `;
+
+    class TodoApp extends LitElement {
+      static get properties() {
+        return {
+          todos: { type: Array }
+        };
+      }
+
+      constructor() {
+        super();
+        this.todos = [
+          { text: 'Do A', finished: true },
+          { text: 'Do B', finished: false },
+          { text: 'Do C', finished: false },
+        ];
+      }
+
+      render() {
+        return html`
+          <h1>Todo app</h1>
+
+          <input id="addTodoInput" placeholder="Name" />
+          <button @click="${this._addTodo}">Add</button>
+
+          <ol>
+            ${this.todos.map(
+              todo => html`
+                <li>
+                  ${todo.text} (${todo.finished ? 'Finished' : 'Unfinished'})
+                  <button @click=${() => this._removeTodo(todo)}>X</button>
+                </li>
+              `,
+            )}
+          </ol>
+
+          ${footerTemplate}
+        `;
+      }
+
+      _addTodo() {
+        const input = this.shadowRoot.getElementById('addTodoInput');
+        const text = input.value;
+        input.value = '';
+
+        this.todos = [
+          ...this.todos,
+          { text, finished: false },
+        ];
+      }
+
+      _removeTodo(todo) {
+        this.todos = this.todos.filter(e => e !== todo);
+      }
+    }
+
+    customElements.define('todo-app', TodoApp);
+  </script>
+</head>
+
+<body>
+  <todo-app></todo-app>
+</body>
+</html>

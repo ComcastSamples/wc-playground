@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <script type="module">
+    /**
+     * End state for:
+     * https://comcastsamples.github.io/wc-playground/codelabs/lit-basics.html#2
+     */
+
+    import { LitElement } from 'lit';
+
+    class TodoApp extends LitElement {
+      connectedCallback() {
+        super.connectedCallback();
+        console.log('lit element connected');
+      }
+    }
+
+    customElements.define('todo-app', TodoApp);
+  </script>
+</head>
+
+<body>
+  <todo-app></todo-app>
+</body>
+</html>

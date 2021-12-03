@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <script type="module">
+    /**
+     * End state for:
+     * https://comcastsamples.github.io/wc-playground/codelabs/lit-basics.html#4
+     */
+
+    import { LitElement, html } from 'lit';
+
+    const author = 'open-wc';
+    const homepage = 'https://open-wc.org/';
+    const footerTemplate = html`
+      <footer>Made with love by <a href="${homepage}">${author}</a></footer>
+    `;
+
+    class TodoApp extends LitElement {
+      render() {
+        return html`
+          <h1>Todo app</h1>
+
+          ${footerTemplate}
+        `;
+      }
+    }
+
+    customElements.define('todo-app', TodoApp);
+  </script>
+</head>
+
+<body>
+  <todo-app></todo-app>
+</body>
+</html>

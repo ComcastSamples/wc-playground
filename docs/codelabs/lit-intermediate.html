@@ -1,0 +1,1188 @@
+    <!doctype html>
+
+    <html>
+    <head>
+      <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+      <meta name="theme-color" content="#4F7DC9">
+      <meta charset="UTF-8">
+      <title>open-wc codelab | lit-html & lit-element: intermediate</title>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+      <style>
+        .success {
+          color: #1e8e3e;
+        }
+        .error {
+          color: red;
+        }
+      </style>
+    </head>
+
+    <body>
+      <google-codelab title="lit-html & lit-element: intermediate" feedback-link="https://github.com/open-wc/open-wc/issues">
+
+
+    <google-codelab-step label="Introduction">
+
+    <p>This codelab is a followup from the <a href="https://open-wc.org/codelabs/#web-components-basics">lit-html &amp; lit-element basics</a> codelab.</p>
+
+    <aside class="notice">
+      This is a copy of the excellent Codelab created by the Open Web Components team at
+      <a href="https://open-wc.org/guides/developing-components/codelabs/">https://open-wc.org/guides/developing-components/codelabs/</a> with a few slight modifications for an in-person workshop. You should only use this instance if you are in our workshop. Otherwise, please use the original source.
+    </aside>
+
+    <p><a href="https://lit.dev/docs/libraries/standalone-templates/">lit-html</a> is an efficient, expressive and extensible HTML templating library for JavaScript. It lets you write HTML templates in JavaScript, then efficiently render and re-render those templates together with data to create and update DOM:</p><p><a href="https://lit.dev/docs/api/LitElement/">lit-element</a> is a simple base class for creating fast and lightweight web components with lit-html.</p><p><strong>What you need</strong></p><ul>
+<li>A web browser that supports Web Components: Firefox, Safari, Chrome or any Chromium-based browser.</li>
+<li>Intermediate knowledge of HTML and Javascript</li>
+<li>Basic knowledge of web components, see our <a href="https://open-wc.org/codelabs/#web-components-basics">basics codelab</a> to get you started.</li>
+<li>Basic knowledge of lit-html &amp; lit-element, see our <a href="https://open-wc.org/codelabs/#lit-html--lit-element-basics">basics codelab</a></li>
+<li>Familiarity with the following concepts:<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules">Javascript Modules</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions">Arrow functions</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter">Array filter</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">Array map</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax">Object &amp; array spread</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function">Async functions</a></li>
+</ul>
+</li>
+</ul><p><strong>What you'll learn</strong></p><ul>
+<li>Connecting your web component to an API</li>
+<li>Handling asynchronous rendering</li>
+<li>Complex templating</li>
+<li>Using third-party components</li>
+<li>Creating lit-html template functions</li>
+</ul><p><strong>How it works</strong></p><p>Unlike the <a href="https://open-wc.org/codelabs/#lit-html--lit-element-basics">basics codelab</a>, we will not explain the required changes for each step in detail. Instead, we give background information and the desired end-result. In most steps, we offer some tips, most of them hidden behind a toggle.</p><p>At the bottom of each section, there is a "View final result" button, this will show you the correct code that you should end up with, in case you get stuck. The steps are sequential, thus results from the previous steps carry over to the next step.</p>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Setup">
+
+    <p>In this codelab, we will build a brewery app. This is a great exercise to learn the intermediate parts of lit-html and lit-element.</p><p>You can follow this codelab using anything that can display a simple HTML page. For the best editing experience, we recommend setting this up using your favorite IDE. Alternatively, you can use an online code editor like <a href="https://jsbin.com/?html,output">jsbin</a>, <a href="https://stackblitz.com/">stackblitz</a> or <a href="https://webcomponents.dev/">webcomponents.dev</a>.</p><p>Let's create a basic HTML page with a module script, and import LitElement from a CDN:</p><pre><code class="language-html">&lt;!DOCTYPE html&gt;
+
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;script type="module"&gt;
+      import { LitElement } from 'lit';
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre><p>Make sure that you add <code>type="module"</code> to the script tag.</p><aside class="notice">
+In this example, we are using `unpkg`, a CDN from which we can easily import any modules that are available on NPM. When working on a real project, it is a good idea to use an actual package manager such as NPM or yarn.
+</aside><p>You should already know how to create a web component using <code>LitElement</code>. Go ahead and create one which renders '<em>My brewery app</em>' to the screen. When it works, you're ready to move on to the next step.</p><hr><details>
+ <summary>View final result</summary>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;brewery-app&gt;&lt;/brewery-app&gt;
+
+    &lt;script type="module"&gt;
+      import { LitElement, html } from 'lit';
+
+      class BreweryApp extends LitElement {
+        render() {
+          return html` My brewery app `;
+        }
+      }
+
+      customElements.define('brewery-app', BreweryApp);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="OpenBreweryDB API">
+
+    <p>For this codelab, we will be fetching data from the api of <a href="https://www.openbrewerydb.org/">Open Brewery DB</a>. Use the url provided to connect and retrieve data from the Open Brewery API <code><a href="https://api.openbrewerydb.org/breweries">https://api.openbrewerydb.org/breweries</a></code>.</p><p>You can test the URL by visiting it from the browser. You should see the API return a JSON response. The return response object you can expect from the api should look similar to this:</p><pre><code class="language-json">[
+  {
+    "id": 2,
+    "name": "Avondale Brewing Co",
+    "brewery_type": "micro",
+    "street": "201 41st St S",
+    "city": "Birmingham",
+    "state": "Alabama",
+    "postal_code": "35222-1932",
+    "country": "United States",
+    "longitude": "-86.774322",
+    "latitude": "33.524521",
+    "phone": "2057775456",
+    "website_url": "http://www.avondalebrewing.com",
+    "updated_at": "2018-08-23T23:19:57.825Z",
+    "tag_list": []
+  },
+  "..."
+]</code></pre><aside class="notice">
+If you're stuck, you can <a href="https://www.openbrewerydb.org/documentation/01-listbreweries">read the documentation</a> on the Open Brewery DB website.
+</aside>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Fetching breweries">
+
+    <p>Besides displaying UI, web components can also use any of the available javascript APIs. We are going to use the <code>fetch</code> function to make an HTTP request to retrieve a list of breweries. <code>fetch</code> is an asynchronous operation, and it costs system resources. We, therefore, need to be a bit more careful about when and how we use it.</p><p><code>LitElement</code> has several lifecycle methods available for this, some of them will be familiar to you by now. See <a href="https://lit.dev/docs/components/lifecycle/">this page</a> for a full overview and reference of all the available lifecycle methods.</p><p>We could trigger our <code>fetch</code> in the constructor since it's run only once. But because it's a best practice to not perform any side effects there, it's better to use the <code>connectedCallback.</code> Because this method can be called multiple times during an element's lifecycle, we should be careful to trigger a <code>fetch</code> only when the data hasn't already been fetched before.</p><h3 id="tasks-to-complete-this-step">Tasks to complete this step:</h3><ul>
+<li>Fetch breweries from the OpenBreweryDB API</li>
+<li>Render the fetched breweries as JSON</li>
+</ul><h3 id="tips">Tips</h3><details>
+ <summary>Using fetch</summary>
+<code>fetch</code> is a browser API for making HTTP requests. It's promise based, and it returns a streaming response. We can turn the the stream into JSON using the <code>json</code> function:
+
+<pre><code class="language-js">async fetchBreweries() {
+  const response = await fetch('https://api.openbrewerydb.org/breweries');
+  const jsonResponse = await response.json();
+  this.breweries = jsonResponse;
+}</code></pre>
+<p>If you're not familiar with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function">async await</a>, this is what it looks like using <code>Promise</code>:</p>
+<pre><code class="language-js">fetchBreweries() {
+  fetch('https://api.openbrewerydb.org/breweries')
+    .then(response =&gt; response.json())
+    .then((jsonResponse) =&gt; {
+      this.breweries = jsonResponse;
+    });
+}</code></pre>
+</details><details>
+ <summary>Example connectedCallback</summary>
+
+<pre><code class="language-js">class BreweryApp extends LitElement {
+  connectedCallback() {
+    super.connectedCallback();
+
+    if (!this.breweries) {
+      this.fetchBreweries();
+    }
+  }
+}</code></pre>
+</details><details>
+<summary>Example of breweries rendered as JSON</summary>
+
+<pre><code class="language-js">render() {
+  return html`
+    &lt;pre&gt;${JSON.stringify(this.breweries, null, 2)}&lt;/pre&gt;
+  `;
+}</code></pre>
+</details><hr><details>
+ <summary>View final result</summary>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;brewery-app&gt;&lt;/brewery-app&gt;
+
+    &lt;script type="module"&gt;
+      import { LitElement, html } from 'lit';
+
+      class BreweryApp extends LitElement {
+        static get properties() {
+          return {
+            breweries: { type: Array },
+          };
+        }
+
+        connectedCallback() {
+          super.connectedCallback();
+
+          if (!this.breweries) {
+            this.fetchBreweries();
+          }
+        }
+
+        async fetchBreweries() {
+          const response = await fetch('https://api.openbrewerydb.org/breweries');
+          const jsonResponse = await response.json();
+          this.breweries = jsonResponse;
+        }
+
+        render() {
+          return html` &lt;pre&gt;${JSON.stringify(this.breweries, null, 2)}&lt;/pre&gt; `;
+        }
+      }
+
+      customElements.define('brewery-app', BreweryApp);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Displaying a loading state">
+
+    <p>Fetching the breweries is async, so the first time your <code>render</code> function is called they aren't there yet. This isn't a problem right now, because <code>JSON.stringify</code> handles null or undefined input. But when we want to start doing things with the list of breweries, our code will crash because the first time <code>this.breweries</code> is undefined.</p><p>We can cover this scenario by preventing the rendering of our main content until the list of breweries are fetched. We can take this opportunity to display a nice loading state for the user as well.</p><h3 id="tasks-to-complete-this-step-1">Tasks to complete this step</h3><ul>
+<li>Maintain a boolean indicating whether the list of breweries are being fetched</li>
+<li>Display a message while the list of breweries are being fetched</li>
+</ul><details>
+<summary>Maintain a loading state while fetching</summary>
+
+<pre><code class="language-js">async fetchBreweries() {
+  this.loading = true;
+  const response = await fetch('https://api.openbrewerydb.org/breweries');
+  const jsonResponse = await response.json();
+  this.breweries = jsonResponse;
+  this.loading = false;
+}</code></pre>
+</details><details>
+<summary>Prevent rendering the main content while loading</summary>
+
+<pre><code class="language-js">render() {
+  if (this.loading) {
+    return html`&lt;p&gt;Loading...&lt;/p&gt;`;
+  }
+
+  return html`
+    &lt;pre&gt;${JSON.stringify(this.breweries, null, 2)}&lt;/pre&gt;
+  `;
+}</code></pre>
+</details><hr><details>
+ <summary>View final result</summary>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;brewery-app&gt;&lt;/brewery-app&gt;
+
+    &lt;script type="module"&gt;
+      import { LitElement, html } from 'lit';
+
+      class BreweryApp extends LitElement {
+        static get properties() {
+          return {
+            loading: { type: Boolean },
+            breweries: { type: Array },
+          };
+        }
+
+        connectedCallback() {
+          super.connectedCallback();
+
+          if (!this.breweries) {
+            this.fetchBreweries();
+          }
+        }
+
+        async fetchBreweries() {
+          this.loading = true;
+          const response = await fetch('https://api.openbrewerydb.org/breweries');
+          const jsonResponse = await response.json();
+          this.breweries = jsonResponse;
+          this.loading = false;
+        }
+
+        render() {
+          if (this.loading) {
+            return html` &lt;p&gt;Loading...&lt;/p&gt; `;
+          }
+
+          return html` &lt;pre&gt;${JSON.stringify(this.breweries, null, 2)}&lt;/pre&gt; `;
+        }
+      }
+
+      customElements.define('brewery-app', BreweryApp);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Displaying breweries">
+
+    <p>To display individual breweries it's best to create a new component so that we separate the logic from the main app. This should be a plain UI component, which receives the brewery data as plain properties to display.</p><h3 id="tasks-to-complete-this-step-2">Tasks to complete this step</h3><ul>
+<li>Create a <code>brewery-detail</code> element that displays the brewery's name, type and city.</li>
+<li>Display a list of <code>brewery-detail</code> elements in the <code>brewery-app</code>, one for each brewery received from the OpenBreweryDB API.</li>
+</ul><h3 id="tips-1">Tips</h3><details>
+ <summary>Create an brewery component</summary>
+
+<pre><code class="language-js">class BreweryDetail extends LitElement {
+  static get properties() {
+    return {
+      name: { type: String },
+      type: { type: String },
+      city: { type: String },
+    };
+  }
+
+  render() {
+    return html`
+      &lt;h3&gt;${this.name}&lt;/h3&gt;
+      &lt;p&gt;brewery type: ${this.type}&lt;/p&gt;
+      &lt;p&gt;city: ${this.city}&lt;/p&gt;
+    `;
+  }
+}
+
+customElements.define('brewery-detail', BreweryDetail);</code></pre>
+</details><details>
+<summary>Display a list of breweries</summary>
+
+<pre><code class="language-js">render() {
+  return html`
+    &lt;ul&gt;
+      ${this.breweries.map(
+        brewery =&gt; html`
+          &lt;li&gt;
+            &lt;brewery-detail
+              .name=${brewery.name}
+              .type=${brewery.brewery_type}
+              .city=${brewery.city}
+            &gt;&lt;/brewery-detail&gt;
+          &lt;/li&gt;
+        `,
+      )}
+    &lt;/ul&gt;
+  `;
+}</code></pre>
+</details><hr><details>
+<summary>View final result</summary>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;brewery-app&gt;&lt;/brewery-app&gt;
+
+    &lt;script type="module"&gt;
+      import { LitElement, html } from 'lit';
+
+      class BreweryApp extends LitElement {
+        static get properties() {
+          return {
+            loading: { type: Boolean },
+            breweries: { type: Array },
+          };
+        }
+
+        connectedCallback() {
+          super.connectedCallback();
+
+          if (!this.breweries) {
+            this.fetchBreweries();
+          }
+        }
+
+        async fetchBreweries() {
+          this.loading = true;
+          const response = await fetch('https://api.openbrewerydb.org/breweries');
+          const jsonResponse = await response.json();
+          this.breweries = jsonResponse;
+          this.loading = false;
+        }
+
+        render() {
+          if (this.loading) {
+            return html` &lt;p&gt;Loading...&lt;/p&gt; `;
+          }
+
+          return html`
+            &lt;h1&gt;Breweries App&lt;/h1&gt;
+
+            &lt;h2&gt;Breweries&lt;/h2&gt;
+            &lt;ul&gt;
+              ${this.breweries.map(
+                brewery =&gt; html`
+                  &lt;li&gt;
+                    &lt;brewery-detail
+                      .name=${brewery.name}
+                      .type=${brewery.brewery_type}
+                      .city=${brewery.city}
+                    &gt;&lt;/brewery-detail&gt;
+                  &lt;/li&gt;
+                `,
+              )}
+            &lt;/ul&gt;
+          `;
+        }
+      }
+
+      customElements.define('brewery-app', BreweryApp);
+
+      class BreweryDetail extends LitElement {
+        static get properties() {
+          return {
+            name: { type: String },
+            type: { type: String },
+            city: { type: String },
+          };
+        }
+
+        render() {
+          return html`
+            &lt;h3&gt;${this.name}&lt;/h3&gt;
+            &lt;p&gt;brewery type: ${this.type}&lt;/p&gt;
+            &lt;p&gt;city: ${this.city}&lt;/p&gt;
+          `;
+        }
+      }
+
+      customElements.define('brewery-detail', BreweryDetail);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Adding a visited/not-visited toggle">
+
+    <p>On a brewery tour it's useful to know which brewery has already been visited. To allow the user to track whether or not they have already visited a brewery we need a button, so the user can click to mark they have visited the brewery.</p><p>As a start, you can maintain a local property for the visited/not-visited status in the <code>brewery-detail</code> component. We will look into lifting this data to the parent component in the next step.</p><h3 id="tasks-to-complete-this-step-3">Tasks to complete this step</h3><ul>
+<li>Add a property on the <code>brewery-detail</code> component which indicates whether the user has visited the brewery.</li>
+<li>Display the visited/not-visited status in the name of each brewery.</li>
+<li>Add a button on the <code>brewery-detail</code> component to toggle between the visited/not-visited status, storing this status locally.</li>
+</ul><h3 id="tips-2">Tips</h3><details>
+<summary>Conditional templating</summary>
+
+<p>You can conditionally render something using any valid javascript expression. For simple logic, a ternary operator is sufficient:</p>
+<pre><code class="language-js">render() {
+  return html`
+    &lt;h3&gt;${this.name} (${this.visited ? 'visited' : 'not-visited'})&lt;/h3&gt;
+  `;
+}</code></pre>
+<p>If the logic is a bit more complex, separating this into a pure function is very useful. The advantage here is that we can use regular if statements, so we don't need to squash everything into a single expression:</p>
+<pre><code class="language-js">function visitedStatus(visited) {
+  if (visited) {
+    return '(visited)';
+  }
+
+  return '(not-visited)';
+}
+
+class MyBrewery extends LitElement {
+  render() {
+    return html` Bendërbrāu ${visitedStatus(this.visited)} `;
+  }
+}</code></pre>
+</details><details>
+ <summary>Adding event listeners</summary>
+With lit-html, you can add event listeners using the <code>@</code> syntax, which is just syntax sugar for `addEventListener`:
+
+<pre><code class="language-js">render() {
+ return html`
+   &lt;button @click=${this._onClick}&gt;&lt;/button&gt;
+ `;
+}
+
+_onClick(e) {
+
+}</code></pre>
+<p>In this example, we register an event listener for the <code>click</code> event, and call the <code>_onClick</code> method on the element when this event is fired.</p>
+</details><hr><details>
+<summary>View final result</summary>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;brewery-app&gt;&lt;/brewery-app&gt;
+
+    &lt;script type="module"&gt;
+      import { LitElement, html } from 'lit';
+
+      class BreweryApp extends LitElement {
+        static get properties() {
+          return {
+            loading: { type: Boolean },
+            breweries: { type: Array },
+          };
+        }
+
+        connectedCallback() {
+          super.connectedCallback();
+
+          if (!this.breweries) {
+            this.fetchBreweries();
+          }
+        }
+
+        async fetchBreweries() {
+          this.loading = true;
+          const response = await fetch('https://api.openbrewerydb.org/breweries');
+          const jsonResponse = await response.json();
+          this.breweries = jsonResponse;
+          this.loading = false;
+        }
+
+        render() {
+          if (this.loading) {
+            return html` &lt;p&gt;Loading...&lt;/p&gt; `;
+          }
+
+          return html`
+            &lt;h1&gt;Breweries App&lt;/h1&gt;
+
+            &lt;h2&gt;Breweries&lt;/h2&gt;
+            &lt;ul&gt;
+              ${this.breweries.map(
+                brewery =&gt; html`
+                  &lt;li&gt;
+                    &lt;brewery-detail
+                      .name=${brewery.name}
+                      .type=${brewery.brewery_type}
+                      .city=${brewery.city}
+                      .visited=${brewery.visited}
+                    &gt;&lt;/brewery-detail&gt;
+                  &lt;/li&gt;
+                `,
+              )}
+            &lt;/ul&gt;
+          `;
+        }
+      }
+
+      customElements.define('brewery-app', BreweryApp);
+
+      class BreweryDetail extends LitElement {
+        static get properties() {
+          return {
+            name: { type: String },
+            type: { type: String },
+            city: { type: String },
+            visited: { type: Boolean },
+          };
+        }
+
+        render() {
+          return html`
+            &lt;h3&gt;${this.name} (${this.visited ? 'visited' : 'not-visited'})&lt;/h3&gt;
+            &lt;p&gt;brewery type: ${this.type}&lt;/p&gt;
+            &lt;p&gt;city: ${this.city}&lt;/p&gt;
+            &lt;button @click=${this._toggleVisitedStatus}&gt;
+              Mark as ${this.visited ? 'not-visited' : 'visited'}
+            &lt;/button&gt;
+          `;
+        }
+
+        _toggleVisitedStatus() {
+          this.visited = !this.visited;
+        }
+      }
+
+      customElements.define('brewery-detail', BreweryDetail);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Add a visited/not-visited counter">
+
+    <p>Now that the user can mark breweries as visited/not-visited, we want to display the total amount of visited breweries and the breweries that still need to be visited in the app. This counter should be displayed in the <code>brewery-app</code>, but we're storing the visited/not-visited status in the <code>brewery-detail</code> component. We need to think of a better way to solve this...</p><p>It's best to keep the data in your application flowing in one direction from top to bottom. Parent components are responsible for data of child components, including changing this data.</p><p>In our case, the <code>brewery-detail</code> component can fire an event to the <code>brewery-app</code> component to request a change in the visited/not-visited status.</p><h3 id="tasks-to-complete-this-step-4">Tasks to complete this step</h3><ul>
+<li>Communicate the visited/not-visited status of the brewery back to the <code>brewery-app</code> component.</li>
+<li>Display the total amount of visited breweries and the breweries that still need to be visited in the <code>brewery-app</code> component.</li>
+</ul><h3 id="tips-3">Tips</h3><p>Remember that with <code>LitElement</code>, you need to use immutable data patterns. Otherwise, it will not be able to pick up data changes.</p><details>
+ <summary>Firing events</summary>
+
+<pre><code class="language-js">_toggleVisitedStatus() {
+  this.dispatchEvent(new CustomEvent('toggle-visited-status'));
+}</code></pre>
+</details><details>
+ <summary>Catch event from a list of elements</summary>
+
+<p>When you add an event listener on an element in a list of templates, you need a way to know which element in the list fired the event. This can be done by passing the list item to the event handler:</p>
+<pre><code class="language-js">html`
+  ${this.breweries.map(
+    brewery =&gt; html`
+      &lt;li&gt;
+        &lt;brewery-detail
+          @toggle-visited-status=${() =&gt; this._toggleVisitedStatus(brewery)}
+        &gt;&lt;/brewery-detail&gt;
+      &lt;/li&gt;
+    `,
+  )}
+`;</code></pre>
+</details><details>
+ <summary>Update visited status in main app</summary>
+
+<p>To update the visited status, we need to use immutable data update patterns. This means we should create a breweries array, and a new object for the brewery that was updated. A quick way to do this, is by using a map function:</p>
+<pre><code class="language-js">_toggleVisitedStatus(breweryToUpdate) {
+  this.breweries = this.breweries.map(brewery =&gt; {
+    return brewery === breweryToUpdate ? { ...brewery, visited: !brewery.visted } : brewery;
+  });
+}</code></pre>
+</details><details>
+ <summary>Calculating derived data</summary>
+
+<p>To display the total amount of visisted/not-visited breweries, we can calculate it on top of the render function:</p>
+<pre><code class="language-js">render() {
+ const totalVisited = this.breweries.filter(b =&gt; b.visited).length;
+
+ return html`...`;
+}</code></pre>
+</details><hr><details>
+<summary>View final result</summary>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;brewery-app&gt;&lt;/brewery-app&gt;
+
+    &lt;script type="module"&gt;
+      import { LitElement, html } from 'lit';
+
+      class BreweryApp extends LitElement {
+        static get properties() {
+          return {
+            loading: { type: Boolean },
+            breweries: { type: Array },
+          };
+        }
+
+        connectedCallback() {
+          super.connectedCallback();
+
+          if (!this.breweries) {
+            this.fetchBreweries();
+          }
+        }
+
+        async fetchBreweries() {
+          this.loading = true;
+          const response = await fetch('https://api.openbrewerydb.org/breweries');
+          const jsonResponse = await response.json();
+          this.breweries = jsonResponse;
+          this.loading = false;
+        }
+
+        render() {
+          if (this.loading) {
+            return html` &lt;p&gt;Loading...&lt;/p&gt; `;
+          }
+
+          const totalVisited = this.breweries.filter(b =&gt; b.visited).length;
+          const totalNotVisited = this.breweries.length - totalVisited;
+
+          return html`
+            &lt;h1&gt;Breweries App&lt;/h1&gt;
+
+            &lt;h2&gt;Breweries&lt;/h2&gt;
+            &lt;p&gt;(${totalVisited} visited and ${totalNotVisited} still to go)&lt;/p&gt;
+            &lt;ul&gt;
+              ${this.breweries.map(
+                brewery =&gt; html`
+                  &lt;li&gt;
+                    &lt;brewery-detail
+                      .name=${brewery.name}
+                      .type=${brewery.brewery_type}
+                      .city=${brewery.city}
+                      .visited=${brewery.visited}
+                      @toggle-visited-status=${() =&gt; this._toggleVisitedStatus(brewery)}
+                    &gt;&lt;/brewery-detail&gt;
+                  &lt;/li&gt;
+                `,
+              )}
+            &lt;/ul&gt;
+          `;
+        }
+
+        _toggleVisitedStatus(breweryToUpdate) {
+          this.breweries = this.breweries.map(brewery =&gt; {
+            return brewery === breweryToUpdate
+              ? { ...brewery, visited: !brewery.visited }
+              : brewery;
+          });
+        }
+      }
+
+      customElements.define('brewery-app', BreweryApp);
+
+      class BreweryDetail extends LitElement {
+        static get properties() {
+          return {
+            name: { type: String },
+            type: { type: String },
+            city: { type: String },
+            visited: { type: Boolean },
+          };
+        }
+
+        render() {
+          return html`
+            &lt;h3&gt;${this.name} (${this.visited ? 'visited' : 'not-visited'})&lt;/h3&gt;
+            &lt;p&gt;brewery type: ${this.type}&lt;/p&gt;
+            &lt;p&gt;city: ${this.city}&lt;/p&gt;
+            &lt;button @click=${this._toggleVisitedStatus}&gt;
+              Mark as ${this.visited ? 'not-visited' : 'visited'}
+            &lt;/button&gt;
+          `;
+        }
+
+        _toggleVisitedStatus() {
+          this.dispatchEvent(new CustomEvent('toggle-visited-status'));
+        }
+      }
+
+      customElements.define('brewery-detail', BreweryDetail);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Add a visited/not-visited filter">
+
+    <p>Now that the <code>brewery-app</code> component knows about the visited/not-visited status, we can do more interesting things like allowing the user to filter based on the brewery's status.</p><p>It's a good practice to separate concerns in your application, and in a real application, such a filter might grow to be quite complex in UI and logic. In those cases, it can be a good idea to separate it into a separate component.</p><p>If the functionality is small, like in our example application, we can keep it in the <code>brewery-app</code> component for now.</p><h3 id="tasks-to-complete-this-step-5">Tasks to complete this step</h3><ul>
+<li>Add three buttons to the <code>brewery-app</code> component:<ul>
+<li>A button which displays only visited breweries</li>
+<li>A button which displays only not-visited breweries</li>
+<li>A button which displays all breweries</li>
+</ul>
+</li>
+</ul><h3 id="tips-4">Tips</h3><details>
+ <summary>Creating a filter</summary>
+
+<p>To create a filter, each of the three buttons can update a <code>filter</code> property on the element. Changing this property should trigger a re-render.</p>
+<p>Then, on the top of your <code>render</code> function, you can filter the array of breweries using this filter value. Make sure you're using this new array in your template, and not the original array.</p>
+</details><hr><details>
+<summary>View final result</summary>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;brewery-app&gt;&lt;/brewery-app&gt;
+
+    &lt;script type="module"&gt;
+      import { LitElement, html } from 'lit';
+
+      class BreweryApp extends LitElement {
+        static get properties() {
+          return {
+            loading: { type: Boolean },
+            breweries: { type: Array },
+            filter: { type: String },
+          };
+        }
+
+        connectedCallback() {
+          super.connectedCallback();
+
+          if (!this.breweries) {
+            this.fetchBreweries();
+          }
+        }
+
+        async fetchBreweries() {
+          this.loading = true;
+          const response = await fetch('https://api.openbrewerydb.org/breweries');
+          const jsonResponse = await response.json();
+          this.breweries = jsonResponse;
+          this.loading = false;
+        }
+
+        render() {
+          if (this.loading) {
+            return html` &lt;p&gt;Loading...&lt;/p&gt; `;
+          }
+
+          const totalVisited = this.breweries.filter(b =&gt; b.visited).length;
+          const totalNotVisted = this.breweries.length - totalVisited;
+          const breweries = this.breweries.filter(brewery =&gt; {
+            if (!this.filter) {
+              return true;
+            }
+            return this.filter === 'visited' ? brewery.visited : !brewery.visited;
+          });
+
+          return html`
+            &lt;h1&gt;Breweries App&lt;/h1&gt;
+
+            &lt;h2&gt;Breweries&lt;/h2&gt;
+            &lt;p&gt;(${totalVisited} visited and ${totalNotVisted} still to go)&lt;/p&gt;
+
+            &lt;button @click=${this._filterNone}&gt;Filter none&lt;/button&gt;
+            &lt;button @click=${this._filterVisited}&gt;Filter visited&lt;/button&gt;
+            &lt;button @click=${this._filterNotVisited}&gt;Filter not-visited&lt;/button&gt;
+
+            &lt;ul&gt;
+              ${breweries.map(
+                brewery =&gt; html`
+                  &lt;li&gt;
+                    &lt;brewery-detail
+                      .name=${brewery.name}
+                      .type=${brewery.brewery_type}
+                      .city=${brewery.city}
+                      .visited=${brewery.visited}
+                      @toggle-visited-status=${() =&gt; this.toggleVisitedStatus(brewery)}
+                    &gt;&lt;/brewery-detail&gt;
+                  &lt;/li&gt;
+                `,
+              )}
+            &lt;/ul&gt;
+          `;
+        }
+
+        toggleVisitedStatus(breweryToUpdate) {
+          this.breweries = this.breweries.map(brewery =&gt; {
+            return brewery === breweryToUpdate
+              ? { ...brewery, visited: !brewery.visited }
+              : brewery;
+          });
+        }
+
+        _filterNone() {
+          this.filter = null;
+        }
+
+        _filterVisited() {
+          this.filter = 'visited';
+        }
+
+        _filterNotVisited() {
+          this.filter = 'not-visited';
+        }
+      }
+
+      customElements.define('brewery-app', BreweryApp);
+
+      class BreweryDetail extends LitElement {
+        static get properties() {
+          return {
+            name: { type: String },
+            type: { type: String },
+            city: { type: String },
+            visited: { type: Boolean },
+          };
+        }
+
+        render() {
+          return html`
+            &lt;h3&gt;${this.name} (${this.visited ? 'visited' : 'not-visited'})&lt;/h3&gt;
+            &lt;p&gt;brewery type: ${this.type}&lt;/p&gt;
+            &lt;p&gt;city: ${this.city}&lt;/p&gt;
+            &lt;button @click=${this._toggleVisitedStatus}&gt;
+              Mark as ${this.visited ? 'not-visited' : 'visited'}
+            &lt;/button&gt;
+          `;
+        }
+
+        _toggleVisitedStatus() {
+          this.dispatchEvent(new CustomEvent('toggle-visited-status'));
+        }
+      }
+
+      customElements.define('brewery-detail', BreweryDetail);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Using other components">
+
+    <p>The great thing about web components is that we can pick up components built with any technology, and use them without knowing the internal implementation.</p><p>The <a href="https://github.com/material-components/material-components-web-components">Material Web Components</a> is a project to implement material design in web components. It is currently in alpha, but we can already use many of the components.</p><h3 id="tasks-to-complete-this-step-6">Tasks to complete this step</h3><ul>
+<li>Replace all the <code>&lt;button&gt;</code> elements in the application with <code>&lt;mwc-button&gt;</code></li>
+</ul><h3 id="tips-5">Tips</h3><p>To import a web component, you can use a 'side effects' import. This just runs the code of the module, which registers the web component.</p><pre><code class="language-js">import '@material/mwc-button';</code></pre>
+<aside class="notice">
+  Note: the above code works because the Material Web Components button was pre-installed locally in this repo via
+  <code>npm install @material/mwc-button --save</code>
+</aside>
+
+<details>
+ <summary>Using the mwc-button component</summary>
+
+<p><code>&lt;mwc-button&gt;</code> works the same a <code>&lt;button&gt;</code> element, we can just replace it's usage:</p>
+<p>From:</p>
+<pre><code class="language-js">html`
+  &lt;button @click=${this._filterNone}&gt;Filter none&lt;/button&gt;
+  &lt;button @click=${this._filterVisited}&gt;Filter visited&lt;/button&gt;
+  &lt;button @click=${this._filterNotVisited}&gt;Filter not-visited&lt;/button&gt;
+`;</code></pre>
+<p>To:</p>
+<pre><code class="language-js">html`
+  &lt;mwc-button @click=${this._filterNone}&gt;Filter none&lt;/mwc-button&gt;
+  &lt;mwc-button @click=${this._filterVisited}&gt;Filter visited&lt;/mwc-button&gt;
+  &lt;mwc-button @click=${this._filterNotVisited}&gt;Filter not-visited&lt;/mwc-button&gt;
+`;</code></pre>
+</details><hr><details>
+<summary>View final result</summary>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;brewery-app&gt;&lt;/brewery-app&gt;
+
+    &lt;script type="module"&gt;
+      import { LitElement, html } from 'lit';
+      import '@material/mwc-button';
+
+      class BreweryApp extends LitElement {
+        static get properties() {
+          return {
+            loading: { type: Boolean },
+            breweries: { type: Array },
+            filter: { type: String },
+          };
+        }
+
+        connectedCallback() {
+          super.connectedCallback();
+
+          if (!this.breweries) {
+            this.fetchBreweries();
+          }
+        }
+
+        async fetchBreweries() {
+          this.loading = true;
+          const response = await fetch('https://api.openbrewerydb.org/breweries');
+          const jsonResponse = await response.json();
+          this.breweries = jsonResponse;
+          this.loading = false;
+        }
+
+        render() {
+          if (this.loading) {
+            return html` &lt;p&gt;Loading...&lt;/p&gt; `;
+          }
+
+          const totalVisited = this.breweries.filter(b =&gt; b.visited).length;
+          const totalNotVisited = this.breweries.length - totalVisited;
+          const breweries = this.breweries.filter(brewery =&gt; {
+            if (!this.filter) {
+              return true;
+            }
+            return this.filter === 'visited' ? brewery.visited : !brewery.visited;
+          });
+
+          return html`
+            &lt;h1&gt;Breweries App&lt;/h1&gt;
+
+            &lt;h2&gt;Breweries&lt;/h2&gt;
+            &lt;p&gt;(${totalVisited} visited and ${totalNotVisited} still to go)&lt;/p&gt;
+
+            &lt;mwc-button @click=${this._filterNone}&gt;Filter none&lt;/mwc-button&gt;
+            &lt;mwc-button @click=${this._filterVisited}&gt;Filter visited&lt;/mwc-button&gt;
+            &lt;mwc-button @click=${this._filterNotVisited}&gt;Filter not-visited&lt;/mwc-button&gt;
+
+            &lt;ul&gt;
+              ${breweries.map(
+                brewery =&gt; html`
+                  &lt;li&gt;
+                    &lt;brewery-detail
+                      .name=${brewery.name}
+                      .type=${brewery.brewery_type}
+                      .city=${brewery.city}
+                      .visited=${brewery.visited}
+                      @toggle-visited-status=${() =&gt; this.toggleVisitedStatus(brewery)}
+                    &gt;&lt;/brewery-detail&gt;
+                  &lt;/li&gt;
+                `,
+              )}
+            &lt;/ul&gt;
+          `;
+        }
+
+        toggleVisitedStatus(breweryToUpdate) {
+          this.breweries = this.breweries.map(brewery =&gt; {
+            return brewery === breweryToUpdate
+              ? { ...brewery, visited: !brewery.visited }
+              : brewery;
+          });
+        }
+
+        _filterNone() {
+          this.filter = null;
+        }
+
+        _filterVisited() {
+          this.filter = 'visited';
+        }
+
+        _filterNotVisited() {
+          this.filter = 'not-visited';
+        }
+      }
+
+      customElements.define('brewery-app', BreweryApp);
+
+      class BreweryDetail extends LitElement {
+        static get properties() {
+          return {
+            name: { type: String },
+            type: { type: String },
+            city: { type: String },
+            visited: { type: Boolean },
+          };
+        }
+
+        render() {
+          return html`
+            &lt;h3&gt;${this.name} (${this.visited ? 'visited' : 'not-visited'})&lt;/h3&gt;
+            &lt;p&gt;brewery type: ${this.type}&lt;/p&gt;
+            &lt;p&gt;city: ${this.city}&lt;/p&gt;
+            &lt;mwc-button @click=${this._toggleVisitedStatus}&gt;
+              Mark as ${this.visited ? 'not-visited' : 'visited'}
+            &lt;/mwc-button&gt;
+          `;
+        }
+
+        _toggleVisitedStatus() {
+          this.dispatchEvent(new CustomEvent('toggle-visited-status'));
+        }
+      }
+
+      customElements.define('brewery-detail', BreweryDetail);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Template function">
+
+    <p>For our <code>brewery-detail</code> we created a separate web component. A web component creates a strong encapsulation boundary between the parent and child components. This is a great feature, we can develop components in complete isolation.</p><p>But sometimes this can be overkill for just simple templates, or we may want to have no boundaries so that we can share styles or select DOM nodes.</p><p>Since lit-html templates are actual javascript variables, we could write our template as a function which returns our template:</p><pre><code class="language-js">function BeerTemplate(beer) {
+  return html` &lt;h1&gt;${beer}&lt;/h1&gt; `;
+}</code></pre><h3 id="tasks-to-complete-this-step-7">Tasks to complete this step</h3><ul>
+<li>Replace the <code>brewery-detail</code> component with a template function.</li>
+</ul><h3 id="tips-6">Tips</h3><details>
+ <summary>Handling events in template functions</summary>
+
+<p>We cannot fire any events from the template function. Instead, we should pass along the event handler from the parent component.</p>
+<pre><code class="language-js">function breweryTemplate(brewery, toggleVisitedStatus) {
+  return html`
+    &lt;h3&gt;${brewery.name} (${brewery.visited ? 'visited' : 'not-visited'})&lt;/h3&gt;
+    &lt;p&gt;brewery type: ${brewery.brewery_type}&lt;/p&gt;
+    &lt;p&gt;city: ${brewery.city}&lt;/p&gt;
+    &lt;mwc-button @click=${toggleVisitedStatus}&gt;
+      Mark as ${brewery.visited ? 'not-visited' : 'visited'}
+    &lt;/mwc-button&gt;
+  `;
+}</code></pre>
+<p>Then, to render the template:</p>
+<pre><code class="language-js">html` &lt;li&gt;${breweryTemplate(brewery, () =&gt; this.toggleVisitedStatus(brewery))}&lt;/li&gt; `;</code></pre>
+<aside class="notice">
+  Note: since our original <code>_toggleVisitedStatus</code> function is now going to be used by another function, we remove the <code>_</code> prefix to imply it is public instead of private: <code>toggleVisitedStatus</code>
+</aside>
+</details><hr><details>
+<summary>View final result</summary>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;brewery-app&gt;&lt;/brewery-app&gt;
+
+    &lt;script type="module"&gt;
+      import { LitElement, html } from 'lit';
+      import '@material/mwc-button';
+
+      function breweryTemplate(brewery, toggleVisitedStatus) {
+        return html`
+          &lt;h3&gt;${brewery.name} (${brewery.visited ? 'visited' : 'not-visited'})&lt;/h3&gt;
+          &lt;p&gt;brewery type: ${brewery.brewery_type}&lt;/p&gt;
+          &lt;p&gt;city: ${brewery.city}&lt;/p&gt;
+          &lt;mwc-button @click=${toggleVisitedStatus}&gt;
+            Mark as ${brewery.visited ? 'not-visited' : 'visited'}
+          &lt;/mwc-button&gt;
+        `;
+      }
+
+      class BreweryApp extends LitElement {
+        static get properties() {
+          return {
+            loading: { type: Boolean },
+            breweries: { type: Array },
+            filter: { type: String },
+          };
+        }
+
+        connectedCallback() {
+          super.connectedCallback();
+
+          if (!this.breweries) {
+            this.fetchBreweries();
+          }
+        }
+
+        async fetchBreweries() {
+          this.loading = true;
+          const response = await fetch('https://api.openbrewerydb.org/breweries');
+          const jsonResponse = await response.json();
+          this.breweries = jsonResponse;
+          this.loading = false;
+        }
+
+        render() {
+          if (this.loading) {
+            return html` &lt;p&gt;Loading...&lt;/p&gt; `;
+          }
+
+          const totalVisited = this.breweries.filter(b =&gt; b.visited).length;
+          const totalNotVisited = this.breweries.length - totalVisited;
+          const breweries = this.breweries.filter(brewery =&gt; {
+            if (!this.filter) {
+              return true;
+            }
+            return this.filter === 'visited' ? brewery.visited : !brewery.visited;
+          });
+
+          return html`
+            &lt;h1&gt;Breweries App&lt;/h1&gt;
+
+            &lt;h2&gt;Breweries&lt;/h2&gt;
+            &lt;p&gt;(${totalVisited} visited and ${totalNotVisited} still to go)&lt;/p&gt;
+
+            &lt;mwc-button @click=${this._filterNone}&gt;Filter none&lt;/mwc-button&gt;
+            &lt;mwc-button @click=${this._filterVisited}&gt;Filter visited&lt;/mwc-button&gt;
+            &lt;mwc-button @click=${this._filterNotVisited}&gt;Filter not-visited&lt;/mwc-button&gt;
+
+            &lt;ul&gt;
+              ${breweries.map(
+                brewery =&gt; html`
+                  &lt;li&gt;${breweryTemplate(brewery, () =&gt; this.toggleVisitedStatus(brewery))}&lt;/li&gt;
+                `,
+              )}
+            &lt;/ul&gt;
+          `;
+        }
+
+        toggleVisitedStatus(breweryToUpdate) {
+          this.breweries = this.breweries.map(brewery =&gt; {
+            return brewery === breweryToUpdate
+              ? { ...brewery, visited: !brewery.visited }
+              : brewery;
+          });
+        }
+
+        _filterNone() {
+          this.filter = null;
+        }
+
+        _filterVisited() {
+          this.filter = 'visited';
+        }
+
+        _filterNotVisited() {
+          this.filter = 'not-visited';
+        }
+      }
+
+      customElements.define('brewery-app', BreweryApp);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Wrapping up">
+
+    <p>That's the end of the intermediate lit-html &amp; lit-element codelab! If you're eager to learn more, you can take a look at the following resources:</p><ul>
+<li><a href="https://lit.dev/docs/libraries/standalone-templates/">lit-html official docs</a></li>
+<li><a href="https://lit.dev/docs/api/LitElement/">lit-element official docs</a></li>
+<li><a href="https://open-wc.org/guides/developing-components/code-examples/">open-wc code samples</a></li>
+<li><a href="https://open-wc.org/guides/tools/ide/">IDE help</a></li>
+</ul><p>To get started with your own project we recommend using open-wc's project scaffolding, it's easy to set it up using this command:</p><pre><code class="language-bash">npm init @open-wc</code></pre>
+
+    </google-codelab-step>
+
+
+      </google-codelab>
+
+      <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+      <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+      <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+      <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+    </body>
+    </html>

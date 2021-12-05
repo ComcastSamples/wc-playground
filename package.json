@@ -20,6 +20,7 @@
     "@web/dev-server": "^0.1.28"
   },
   "dependencies": {
+    "@material/mwc-button": "^0.25.3",
     "lit": "^2.0.2"
   }
 }

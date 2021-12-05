@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <script type="module">
+    /**
+     * End state for::
+     * https://comcastsamples.github.io/wc-playground/codelabs/lit-intermediate.html#1
+     */
+
+    import { LitElement, html } from 'lit';
+
+    class BreweryApp extends LitElement {
+      render() {
+        return html` My brewery app `;
+      }
+    }
+
+    customElements.define('brewery-app', BreweryApp);
+  </script>
+</head>
+
+<body>
+  <brewery-app></brewery-app>
+</body>
+</html>

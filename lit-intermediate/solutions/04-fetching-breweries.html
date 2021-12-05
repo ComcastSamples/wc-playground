@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <script type="module">
+    /**
+     * End state for::
+     * https://comcastsamples.github.io/wc-playground/codelabs/lit-intermediate.html#3
+     */
+
+    import { LitElement, html } from 'lit';
+
+    class BreweryApp extends LitElement {
+      static get properties() {
+        return {
+          breweries: { type: Array },
+        };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+
+        if (!this.breweries) {
+          this.fetchBreweries();
+        }
+      }
+
+      async fetchBreweries() {
+        const response = await fetch('https://api.openbrewerydb.org/breweries');
+        const jsonResponse = await response.json();
+        this.breweries = jsonResponse;
+      }
+
+      render() {
+        return html` <pre>${JSON.stringify(this.breweries, null, 2)}</pre> `;
+      }
+    }
+
+    customElements.define('brewery-app', BreweryApp);
+  </script>
+</head>
+
+<body>
+  <brewery-app></brewery-app>
+</body>
+</html>

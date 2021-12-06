@@ -59,7 +59,7 @@
 
     <google-codelab-step label="Setup">
 
-    <p>In this codelab, we will build a brewery app. This is a great exercise to learn the intermediate parts of lit-html and lit-element.</p><p>You can follow this codelab using anything that can display a simple HTML page. For the best editing experience, we recommend setting this up using your favorite IDE. Alternatively, you can use an online code editor like <a href="https://jsbin.com/?html,output">jsbin</a>, <a href="https://stackblitz.com/">stackblitz</a> or <a href="https://webcomponents.dev/">webcomponents.dev</a>.</p><p>Let's create a basic HTML page with a module script, and import LitElement from a CDN:</p><pre><code class="language-html">&lt;!DOCTYPE html&gt;
+    <p>In this codelab, we will build a brewery app. This is a great exercise to learn the intermediate parts of lit-html and lit-element.</p><p>You can follow this codelab using anything that can display a simple HTML page. For the best editing experience, we recommend setting this up using your favorite IDE. Alternatively, you can use an online code editor like <a href="https://jsbin.com/?html,output">jsbin</a>, <a href="https://stackblitz.com/">stackblitz</a> or <a href="https://webcomponents.dev/">webcomponents.dev</a>.</p><p>Let's create a basic HTML page with a module script, and import LitElement from our local node_modules:</p><pre><code class="language-html">&lt;!DOCTYPE html&gt;
 
 &lt;html&gt;
   &lt;body&gt;
@@ -67,9 +67,7 @@
       import { LitElement } from 'lit';
     &lt;/script&gt;
   &lt;/body&gt;
-&lt;/html&gt;</code></pre><p>Make sure that you add <code>type="module"</code> to the script tag.</p><aside class="notice">
-In this example, we are using `unpkg`, a CDN from which we can easily import any modules that are available on NPM. When working on a real project, it is a good idea to use an actual package manager such as NPM or yarn.
-</aside><p>You should already know how to create a web component using <code>LitElement</code>. Go ahead and create one which renders '<em>My brewery app</em>' to the screen. When it works, you're ready to move on to the next step.</p><hr><details>
+&lt;/html&gt;</code></pre><p>Make sure that you add <code>type="module"</code> to the script tag.</p><p>You should already know how to create a web component using <code>LitElement</code>. Go ahead and create one which renders '<em>My brewery app</em>' to the screen. When it works, you're ready to move on to the next step.</p><hr><details>
  <summary>View final result</summary>
 
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;

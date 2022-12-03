@@ -593,7 +593,7 @@ _onClick(e) {
 <p>To update the visited status, we need to use immutable data update patterns. This means we should create a breweries array, and a new object for the brewery that was updated. A quick way to do this, is by using a map function:</p>
 <pre><code class="language-js">_toggleVisitedStatus(breweryToUpdate) {
   this.breweries = this.breweries.map(brewery =&gt; {
-    return brewery === breweryToUpdate ? { ...brewery, visited: !brewery.visted } : brewery;
+    return brewery === breweryToUpdate ? { ...brewery, visited: !brewery.visited } : brewery;
   });
 }</code></pre>
 </details><details>
@@ -772,7 +772,7 @@ _onClick(e) {
           }
 
           const totalVisited = this.breweries.filter(b =&gt; b.visited).length;
-          const totalNotVisted = this.breweries.length - totalVisited;
+          const totalNotVisited = this.breweries.length - totalVisited;
           const breweries = this.breweries.filter(brewery =&gt; {
             if (!this.filter) {
               return true;
@@ -784,7 +784,7 @@ _onClick(e) {
             &lt;h1&gt;Breweries App&lt;/h1&gt;
 
             &lt;h2&gt;Breweries&lt;/h2&gt;
-            &lt;p&gt;(${totalVisited} visited and ${totalNotVisted} still to go)&lt;/p&gt;
+            &lt;p&gt;(${totalVisited} visited and ${totalNotVisited} still to go)&lt;/p&gt;
 
             &lt;button @click=${this._filterNone}&gt;Filter none&lt;/button&gt;
             &lt;button @click=${this._filterVisited}&gt;Filter visited&lt;/button&gt;

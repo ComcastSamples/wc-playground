@@ -406,10 +406,8 @@ In the inspector you also see comment nodes between different parts of your temp
 
     <google-codelab-step label="Reactive property changes">
 
-    <p>Right now, we're triggering updates manually whenever we make a change. This is fine for some use cases, but it can get pretty cumbersome and we are not able to respond to changes triggered by parent components.</p><p>It's better to let <code>LitElement</code> observe data changes for us and, trigger updates when necessary. We can do this by defining <code>todos</code> as a property of our element.</p><p>Start by adding a static properties field, and add <code>todos</code> as an array property:</p><pre><code class="language-js">static get properties() {
-  return {
+    <p>Right now, we're triggering updates manually whenever we make a change. This is fine for some use cases, but it can get pretty cumbersome and we are not able to respond to changes triggered by parent components.</p><p>It's better to let <code>LitElement</code> observe data changes for us and, trigger updates when necessary. We can do this by defining <code>todos</code> as a property of our element.</p><p>Start by adding a static properties field, and add <code>todos</code> as an array property:</p><pre><code class="language-js">static properties = {
     todos: { type: Array }
-  };
 }</code></pre><p>For each property that you've defined, <code>LitElement</code> generates something similar to this:</p><pre><code class="language-js">class TodosApp extends LitElement {
   set todos(newTodos) {
     if (this._todos === newTodos) {
@@ -452,10 +450,8 @@ In the inspector you also see comment nodes between different parts of your temp
       `;
 
       class TodoApp extends LitElement {
-        static get properties() {
-          return {
-            todos: { type: Array },
-          };
+        static properties = {
+          todos: { type: Array },
         }
 
         constructor() {
@@ -534,10 +530,8 @@ In the inspector you also see comment nodes between different parts of your temp
       `;
 
       class TodoApp extends LitElement {
-        static get properties() {
-          return {
-            todos: { type: Array },
-          };
+        static properties = {
+          todos: { type: Array },
         }
 
         constructor() {
@@ -640,10 +634,8 @@ input.setAttribute('value', 'foo');</code></pre>
       `;
 
       class TodoApp extends LitElement {
-        static get properties() {
-          return {
-            todos: { type: Array },
-          };
+        static properties = {
+          todos: { type: Array },
         }
 
         constructor() {
@@ -753,10 +745,8 @@ input.setAttribute('value', 'foo');</code></pre>
       `;
 
       class TodoApp extends LitElement {
-        static get properties() {
-          return {
-            todos: { type: Array },
-          };
+        static properties = {
+          todos: { type: Array },
         }
 
         constructor() {
@@ -836,10 +826,8 @@ input.setAttribute('value', 'foo');</code></pre>
     <google-codelab-step label="Create a child component">
 
     <p>It looks like we're feature complete! We can display a list of todos, add or remove them and check them off once completed.</p><p>However, we've been putting everything inside only one component, and it's starting to get crowded. It's better to split functionality up into separate components. We are building Web Components, after all.</p><p>The todo list is an ideal candidate to be moved into a separate component. Let's go ahead and define the basic structure of our element. If you're working in an online editor, it's probably easier to do this in the same file. If you're using a local editor, it's best to create a separate file for this.</p><p>If you use a separate file, don't forget to import <code>LitElement</code> and <code>html</code> for that module as well.</p><pre><code class="language-js">class TodoList extends LitElement {
-  static get properties() {
-    return {
-      todos: { type: Array },
-    };
+  static properties = {
+    todos: { type: Array },
   }
 
   render() {
@@ -886,10 +874,8 @@ _removeTodo(item) {
       import { LitElement, html } from 'lit';
 
       class TodoList extends LitElement {
-        static get properties() {
-          return {
-            todos: { type: Array },
-          };
+        static properties = {
+          todos: { type: Array },
         }
 
         render() {
@@ -935,10 +921,8 @@ _removeTodo(item) {
       `;
 
       class TodoApp extends LitElement {
-        static get properties() {
-          return {
-            todos: { type: Array },
-          };
+        static properties = {
+          todos: { type: Array },
         }
 
         constructor() {
@@ -1063,10 +1047,8 @@ _changeTodoFinished(e) {
           import { LitElement, html } from 'lit';
 
           class TodoList extends LitElement {
-            static get properties() {
-              return {
-                todos: { type: Array },
-              };
+            static properties = {
+              todos: { type: Array },
             }
 
             render() {
@@ -1112,10 +1094,8 @@ _changeTodoFinished(e) {
           `;
 
           class TodoApp extends LitElement {
-            static get properties() {
-              return {
-                todos: { type: Array },
-              };
+            static properties = {
+              todos: { type: Array },
             }
 
             constructor() {
@@ -1187,29 +1167,25 @@ _changeTodoFinished(e) {
     <p>We've covered the basics of templating and managing data with lit-element. The last remaining topic we need to look into is styling. This isn't a codelab on CSS, so we will only look at some of the specifics of working with styling in lit-element.</p><p>For styling, lit-element uses Shadow DOM. If you're not familiar with Shadow DOM, I recommend following the <a href="https://open-wc.org/codelabs/basics/web-components.html">web component basics</a> codelab.</p><p>To define the styles of your element we need to import the <code>css</code> tag and add a static styles property on our element. Let's add styles to the todo list:</p><pre><code class="language-js">import { LitElement, html, css } from 'lit';
 
 class TodoList extends LitElement {
-  static get properties() {
-    return {
-      todos: { type: Array },
-    };
+  static properties = {
+    todos: { type: Array },
   }
 
-  static get styles() {
-    return css`
-      :host {
-        color: blue;
-      }
+  static styles = css`
+    :host {
+      color: blue;
+    }
 
-      ol {
-        list-style: none;
-        padding: 0;
-      }
+    ol {
+      list-style: none;
+      padding: 0;
+    }
 
-      button {
-        background-color: transparent;
-        border: none;
-      }
-    `;
-  }
+    button {
+      background-color: transparent;
+      border: none;
+    }
+  `;
 
   render() {
     if (!this.todos) {
@@ -1250,29 +1226,25 @@ customElements.define('todo-list', TodoList);</code></pre><p>The styles we defin
       import { LitElement, html, css } from 'lit';
 
       class TodoList extends LitElement {
-        static get properties() {
-          return {
-            todos: { type: Array },
-          };
+        static properties = {
+          todos: { type: Array },
         }
 
-        static get styles() {
-          return css`
-            :host {
-              color: blue;
-            }
+        static styles = css`
+          :host {
+            color: blue;
+          }
 
-            ol {
-              list-style: none;
-              padding: 0;
-            }
+          ol {
+            list-style: none;
+            padding: 0;
+          }
 
-            button {
-              background-color: transparent;
-              border: none;
-            }
-          `;
-        }
+          button {
+            background-color: transparent;
+            border: none;
+          }
+        `;
 
         render() {
           if (!this.todos) {
@@ -1317,10 +1289,8 @@ customElements.define('todo-list', TodoList);</code></pre><p>The styles we defin
       `;
 
       class TodoApp extends LitElement {
-        static get properties() {
-          return {
-            todos: { type: Array },
-          };
+        static properties = {
+          todos: { type: Array },
         }
 
         constructor() {
